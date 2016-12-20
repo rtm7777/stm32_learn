@@ -16,13 +16,16 @@
 #define LED_GPIO_PORT GPIOC
 #define LED_GPIO_PIN GPIO_PIN_13
 
+TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
+int lala = 0;
 
 /* Private variables ---------------------------------------------------------*/
 static GPIO_InitTypeDef  GPIO_InitStruct;
 
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
+static void TIM1_Init(void);
 static void TIM2_Init(void);
 
 /* Private functions ---------------------------------------------------------*/
@@ -37,14 +40,20 @@ int main(void)
     HAL_Init();
     SystemClock_Config();
 
+    __GPIOA_CLK_ENABLE();
+    __GPIOB_CLK_ENABLE();
     __GPIOC_CLK_ENABLE();
+
     GPIO_InitStruct.Pin = LED_GPIO_PIN;
     GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull  = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
     HAL_GPIO_Init(LED_GPIO_PORT, &GPIO_InitStruct);
 
+    TIM1_Init();
     TIM2_Init();
+    HAL_TIM_Base_Start_IT(&htim1);
+    HAL_TIM_OC_Start_IT(&htim1, TIM_CHANNEL_ALL);
     HAL_TIM_Base_Start_IT(&htim2);
 
     while (1) {
@@ -91,6 +100,52 @@ void SystemClock_Config(void)
   }
 }
 
+void TIM1_Init(void)
+{
+
+  TIM_ClockConfigTypeDef sClockSourceConfig;
+  TIM_MasterConfigTypeDef sMasterConfig;
+  TIM_OC_InitTypeDef sConfigOC;
+  TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig;
+
+  htim1.Instance = TIM1;
+  htim1.Init.Prescaler = 360;
+  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim1.Init.Period = 10;
+  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim1.Init.RepetitionCounter = 0;
+  HAL_TIM_Base_Init(&htim1);
+
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig);
+
+
+  HAL_TIM_PWM_Init(&htim1);
+
+  HAL_TIM_OC_Init(&htim1);
+
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig);
+
+  sConfigOC.OCMode = TIM_OCMODE_TIMING;
+  sConfigOC.Pulse = 790;
+  HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
+
+
+  sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;
+  sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;
+  sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;
+  sBreakDeadTimeConfig.DeadTime = 0;
+  sBreakDeadTimeConfig.BreakState = TIM_BREAK_DISABLE;
+  sBreakDeadTimeConfig.BreakPolarity = TIM_BREAKPOLARITY_HIGH;
+  sBreakDeadTimeConfig.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;
+  HAL_TIMEx_ConfigBreakDeadTime(&htim1, &sBreakDeadTimeConfig);
+
+  // HAL_TIM_MspPostInit(&htim1);
+
+}
+
 void TIM2_Init(void)
 {
 
@@ -100,7 +155,7 @@ void TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 36000;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 30;
+  htim2.Init.Period = 1000;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   HAL_TIM_Base_Init(&htim2);
 
@@ -115,11 +170,47 @@ void TIM2_Init(void)
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  if (htim->Instance==TIM2)
+  if (htim->Instance==TIM1)
+  {
+    if (lala == 0)
+    {
+      HAL_GPIO_WritePin(LED_GPIO_PORT, LED_GPIO_PIN, GPIO_PIN_SET);
+      htim1.Init.Period = 150;
+      HAL_TIM_Base_Init(&htim1);
+      TIM_GET_CLEAR_IT(&htim1, TIM_IT_UPDATE);
+      lala = 1;
+    }
+    else
+    {
+      HAL_GPIO_WritePin(LED_GPIO_PORT, LED_GPIO_PIN, GPIO_PIN_RESET);
+      htim1.Init.Period = 1;
+      HAL_TIM_Base_Init(&htim1);
+      TIM_GET_CLEAR_IT(&htim1, TIM_IT_UPDATE);
+      lala = 0;
+    }
+    // HAL_GPIO_TogglePin(LED_GPIO_PORT, LED_GPIO_PIN);
+  }
+  else if (htim->Instance==TIM2)
+  {
+    // HAL_GPIO_TogglePin(LED_GPIO_PORT, LED_GPIO_PIN);
+  }
+
+}
+
+void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  if (htim->Instance==TIM1)
   {
     HAL_GPIO_TogglePin(LED_GPIO_PORT, LED_GPIO_PIN);
   }
+}
 
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
+{
+  if (htim->Instance==TIM1)
+  {
+    HAL_GPIO_TogglePin(LED_GPIO_PORT, LED_GPIO_PIN);
+  }
 }
 
 
