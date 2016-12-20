@@ -1,6 +1,6 @@
 PROJECT(stm32learn)
 cmake_minimum_required(VERSION 2.6)
-SET(STM32CubeF1_FW /home/kolan/STM32Cube/Repository/STM32Cube_FW_F1_V1.3.0)
+SET(STM32CubeF1_FW /home/kolan/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0)
 SET(STLINK_BIN ${CMAKE_SOURCE_DIR}/../stlink/st-flash)
 
 
@@ -16,10 +16,10 @@ SET(HAL_LIB_SRC ${STM32CubeF1_FW}/Drivers/STM32F1xx_HAL_Driver/Src/)
 SET(CMAKE_VERBOSE_MAKEFILE 0)
 SET(CMAKE_SYSTEM_NAME Linux)
 SET(CMAKE_BUILD_TYPE DEBUG)
-SET(CMAKE_C_COMPILER "/usr/local/gcc-arm-none-eabi/bin/arm-none-eabi-gcc")
-SET(CMAKE_LINKER "/usr/local/gcc-arm-none-eabi/bin/arm-none-eabi-ld")
-SET(CMAKE_OBJCOPY "/usr/local/gcc-arm-none-eabi/bin/arm-none-eabi-objcopy")
-SET(CMAKE_SIZE "/usr/local/gcc-arm-none-eabi/bin/arm-none-eabi-size")
+SET(CMAKE_C_COMPILER "/usr/bin/arm-none-eabi-gcc")
+SET(CMAKE_LINKER "/usr/bin/arm-none-eabi-ld")
+SET(CMAKE_OBJCOPY "/usr/bin/arm-none-eabi-objcopy")
+SET(CMAKE_SIZE "/usr/bin/arm-none-eabi-size")
 
 SET(LINK_SCRIPT ${CMAKE_SOURCE_DIR}/Boot/STM32F103XB_FLASH.ld)
 SET(FAMILY "STM32F103xB")
