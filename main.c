@@ -119,9 +119,6 @@ void TIM1_Init(void)
   sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
   HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig);
 
-
-  // HAL_TIM_PWM_Init(&htim1);
-
   HAL_TIM_OC_Init(&htim1);
 
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
@@ -129,7 +126,7 @@ void TIM1_Init(void)
   HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig);
 
   sConfigOC.OCMode = TIM_OCMODE_TIMING;
-  sConfigOC.Pulse = 50;
+  sConfigOC.Pulse = 3;
   HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
 
 
@@ -141,8 +138,6 @@ void TIM1_Init(void)
   sBreakDeadTimeConfig.BreakPolarity = TIM_BREAKPOLARITY_HIGH;
   sBreakDeadTimeConfig.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;
   HAL_TIMEx_ConfigBreakDeadTime(&htim1, &sBreakDeadTimeConfig);
-
-  // HAL_TIM_MspPostInit(&htim1);
 
 }
 
@@ -170,8 +165,14 @@ void TIM2_Init(void)
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  if (htim->Instance==TIM3)
+  if (htim->Instance==TIM1)
   {
+    //program PWM using compare interrupt
+    HAL_GPIO_WritePin(LED_GPIO_PORT, LED_GPIO_PIN, GPIO_PIN_RESET);
+  }
+  else if (htim->Instance==TIM2)
+  {
+    //program PWM by changing timer period value
     if (lala == 0)
     {
       HAL_GPIO_WritePin(LED_GPIO_PORT, LED_GPIO_PIN, GPIO_PIN_SET);
@@ -188,26 +189,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
       TIM_GET_CLEAR_IT(&htim1, TIM_IT_UPDATE);
       lala = 0;
     }
-    // HAL_GPIO_TogglePin(LED_GPIO_PORT, LED_GPIO_PIN);
-  }
-  else if (htim->Instance==TIM2)
-  {
-    // HAL_GPIO_TogglePin(LED_GPIO_PORT, LED_GPIO_PIN);
-  }
-  else if (htim->Instance==TIM1)
-  {
-    HAL_GPIO_WritePin(LED_GPIO_PORT, LED_GPIO_PIN, GPIO_PIN_RESET);
-    TIM_GET_CLEAR_IT(&htim1, TIM_IT_UPDATE);
   }
 
 }
 
 void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  if (htim->Instance==TIM1)
+  if (TIM_GET_ITSTATUS(&htim1, TIM_IT_CC3)) //Check timer and interrupt source
   {
     HAL_GPIO_WritePin(LED_GPIO_PORT, LED_GPIO_PIN, GPIO_PIN_SET);
-    TIM_GET_CLEAR_IT(&htim1, TIM_IT_CC3);
   }
 }
 
