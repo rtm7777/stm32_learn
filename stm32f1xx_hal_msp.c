@@ -92,42 +92,6 @@ void HAL_MspDeInit(void)
    */
 }
 
-/**
-  * @brief  Initializes the PPP MSP.
-  * @retval None
-  */
-void HAL_UART_MspInit(UART_HandleTypeDef *huart)
-{
-  /* NOTE : This function is generated automatically by MicroXplorer and eventually  
-            modified by the user
-   */ 
-  GPIO_InitTypeDef  GPIO_InitStruct;
-
-  /* Enable GPIO TX/RX clock */
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_USART2_CLK_ENABLE();
-
-  /*##-2- Configure peripheral GPIO ##########################################*/
-  /* UART TX GPIO pin configuration  */
-  GPIO_InitStruct.Pin       = GPIO_PIN_2;
-  GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull      = GPIO_PULLUP;
-  GPIO_InitStruct.Speed     = GPIO_SPEED_HIGH;
-
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-}
-
-/**
-  * @brief  DeInitializes the PPP MSP.
-  * @retval None
-  */
-void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
-{
-  /* NOTE : This function is generated automatically by MicroXplorer and eventually  
-            modified by the user
-   */
-}
-
 
 void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
 {
@@ -203,16 +167,5 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
 
 }
 
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

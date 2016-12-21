@@ -216,33 +216,6 @@ Boot/system_stm32f1xx.c.s:
 	$(MAKE) -f CMakeFiles/stm32learn.elf.dir/build.make CMakeFiles/stm32learn.elf.dir/Boot/system_stm32f1xx.c.s
 .PHONY : Boot/system_stm32f1xx.c.s
 
-Lib/printf.o: Lib/printf.c.o
-
-.PHONY : Lib/printf.o
-
-# target to build an object file
-Lib/printf.c.o:
-	$(MAKE) -f CMakeFiles/stm32learn.elf.dir/build.make CMakeFiles/stm32learn.elf.dir/Lib/printf.c.o
-.PHONY : Lib/printf.c.o
-
-Lib/printf.i: Lib/printf.c.i
-
-.PHONY : Lib/printf.i
-
-# target to preprocess a source file
-Lib/printf.c.i:
-	$(MAKE) -f CMakeFiles/stm32learn.elf.dir/build.make CMakeFiles/stm32learn.elf.dir/Lib/printf.c.i
-.PHONY : Lib/printf.c.i
-
-Lib/printf.s: Lib/printf.c.s
-
-.PHONY : Lib/printf.s
-
-# target to generate assembly for a file
-Lib/printf.c.s:
-	$(MAKE) -f CMakeFiles/stm32learn.elf.dir/build.make CMakeFiles/stm32learn.elf.dir/Lib/printf.c.s
-.PHONY : Lib/printf.c.s
-
 home/kolan/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o: home/kolan/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c.o
 
 .PHONY : home/kolan/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
@@ -558,9 +531,6 @@ help:
 	@echo "... Boot/system_stm32f1xx.o"
 	@echo "... Boot/system_stm32f1xx.i"
 	@echo "... Boot/system_stm32f1xx.s"
-	@echo "... Lib/printf.o"
-	@echo "... Lib/printf.i"
-	@echo "... Lib/printf.s"
 	@echo "... home/kolan/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o"
 	@echo "... home/kolan/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.i"
 	@echo "... home/kolan/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.s"

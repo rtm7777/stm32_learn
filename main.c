@@ -18,6 +18,7 @@
 
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
+TIM_OC_InitTypeDef sConfigOC;
 int lala = 0;
 
 /* Private variables ---------------------------------------------------------*/
@@ -57,7 +58,18 @@ int main(void)
     // HAL_TIM_Base_Start_IT(&htim2);
 
     while (1) {
-      
+      for (int i = 3; i < 300; ++i)
+      {
+        sConfigOC.Pulse = i;
+        HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
+        HAL_Delay(5);
+      }
+      for (int i = 299; i > 3; i--)
+      {
+        sConfigOC.Pulse = i;
+        HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
+        HAL_Delay(6);
+      }
     }
 }
 
@@ -105,13 +117,12 @@ void TIM1_Init(void)
 
   TIM_ClockConfigTypeDef sClockSourceConfig;
   TIM_MasterConfigTypeDef sMasterConfig;
-  TIM_OC_InitTypeDef sConfigOC;
   TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig;
 
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 36;
+  htim1.Init.Prescaler = 3600;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 1000;
+  htim1.Init.Period = 300;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   HAL_TIM_Base_Init(&htim1);
