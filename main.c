@@ -53,8 +53,8 @@ int main(void)
     TIM1_Init();
     TIM2_Init();
     HAL_TIM_Base_Start_IT(&htim1);
-    HAL_TIM_OC_Start_IT(&htim1, TIM_CHANNEL_ALL);
-    HAL_TIM_Base_Start_IT(&htim2);
+    HAL_TIM_OC_Start_IT(&htim1, TIM_CHANNEL_3);
+    // HAL_TIM_Base_Start_IT(&htim2);
 
     while (1) {
       
@@ -109,9 +109,9 @@ void TIM1_Init(void)
   TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig;
 
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 360;
+  htim1.Init.Prescaler = 36;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 10;
+  htim1.Init.Period = 1000;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   HAL_TIM_Base_Init(&htim1);
@@ -120,7 +120,7 @@ void TIM1_Init(void)
   HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig);
 
 
-  HAL_TIM_PWM_Init(&htim1);
+  // HAL_TIM_PWM_Init(&htim1);
 
   HAL_TIM_OC_Init(&htim1);
 
@@ -129,7 +129,7 @@ void TIM1_Init(void)
   HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig);
 
   sConfigOC.OCMode = TIM_OCMODE_TIMING;
-  sConfigOC.Pulse = 790;
+  sConfigOC.Pulse = 50;
   HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
 
 
@@ -153,7 +153,7 @@ void TIM2_Init(void)
   TIM_MasterConfigTypeDef sMasterConfig;
 
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 36000;
+  htim2.Init.Prescaler = 3600;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 1000;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -170,7 +170,7 @@ void TIM2_Init(void)
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  if (htim->Instance==TIM1)
+  if (htim->Instance==TIM3)
   {
     if (lala == 0)
     {
@@ -194,6 +194,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   {
     // HAL_GPIO_TogglePin(LED_GPIO_PORT, LED_GPIO_PIN);
   }
+  else if (htim->Instance==TIM1)
+  {
+    HAL_GPIO_WritePin(LED_GPIO_PORT, LED_GPIO_PIN, GPIO_PIN_RESET);
+    TIM_GET_CLEAR_IT(&htim1, TIM_IT_UPDATE);
+  }
 
 }
 
@@ -201,15 +206,8 @@ void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if (htim->Instance==TIM1)
   {
-    HAL_GPIO_TogglePin(LED_GPIO_PORT, LED_GPIO_PIN);
-  }
-}
-
-void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
-{
-  if (htim->Instance==TIM1)
-  {
-    HAL_GPIO_TogglePin(LED_GPIO_PORT, LED_GPIO_PIN);
+    HAL_GPIO_WritePin(LED_GPIO_PORT, LED_GPIO_PIN, GPIO_PIN_SET);
+    TIM_GET_CLEAR_IT(&htim1, TIM_IT_CC3);
   }
 }
 
