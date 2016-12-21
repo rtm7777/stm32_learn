@@ -1,5 +1,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#define ARM_MATH_CM3
+#include "arm_math.h"
+
 
 /** @addtogroup STM32F1xx_HAL_Examples
   * @{
@@ -57,6 +60,12 @@ int main(void)
     HAL_TIM_OC_Start_IT(&htim1, TIM_CHANNEL_3);
     // HAL_TIM_Base_Start_IT(&htim2);
 
+    int pulse = 0;
+    pulse = pow(2, 3);
+    if (pulse == 8)
+    {
+      HAL_GPIO_WritePin(LED_GPIO_PORT, LED_GPIO_PIN, GPIO_PIN_SET);
+    }
     while (1) {
       for (int i = 3; i < 300; ++i)
       {

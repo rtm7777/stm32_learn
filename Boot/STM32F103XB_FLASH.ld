@@ -39,6 +39,10 @@ MEMORY
 FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 64K
 RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 20K
 }
+
+/* Next line is for exclude error while import math lib */
+GROUP(libc.a libm.a)
+
 /* Define output sections */
 SECTIONS
 {

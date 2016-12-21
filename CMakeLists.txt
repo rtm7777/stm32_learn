@@ -1,7 +1,6 @@
 PROJECT(stm32learn)
 cmake_minimum_required(VERSION 2.6)
 SET(STM32CubeF1_FW /home/kolan/STM32Cube/Repository/STM32Cube_FW_F1_V1.4.0)
-SET(STLINK_BIN ${CMAKE_SOURCE_DIR}/../stlink/st-flash)
 
 
 INCLUDE_DIRECTORIES(
@@ -61,4 +60,4 @@ ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME}.elf POST_BUILD COMMAND ${CMAKE_SIZE} $
 ADD_CUSTOM_TARGET(generate_bin ALL DEPENDS ${PROJECT_NAME}.bin)
 ADD_CUSTOM_TARGET(generate_hex ALL DEPENDS ${PROJECT_NAME}.hex)
 
-add_custom_target(flash ${STLINK_BIN} --reset write ${PROJECT_NAME}.bin 0x8000000 depends ${PROJECT_NAME}.bin)
+add_custom_target(flash st-flash --reset write ${PROJECT_NAME}.bin 0x8000000)
