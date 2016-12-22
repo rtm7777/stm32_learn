@@ -30,7 +30,7 @@ static GPIO_InitTypeDef  GPIO_InitStruct;
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
 static void TIM1_Init(void);
-static void TIM2_Init(void);
+// static void TIM2_Init(void);
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -55,30 +55,63 @@ int main(void)
     HAL_GPIO_Init(LED_GPIO_PORT, &GPIO_InitStruct);
 
     TIM1_Init();
-    TIM2_Init();
+    // TIM2_Init();
     HAL_TIM_Base_Start_IT(&htim1);
     HAL_TIM_OC_Start_IT(&htim1, TIM_CHANNEL_3);
     // HAL_TIM_Base_Start_IT(&htim2);
 
-    int pulse = 0;
-    pulse = pow(2, 3);
-    if (pulse == 8)
-    {
-      HAL_GPIO_WritePin(LED_GPIO_PORT, LED_GPIO_PIN, GPIO_PIN_SET);
-    }
+    int direction = 1;
+    float step = 1.0;
+    int pulse = 3;
+
     while (1) {
-      for (int i = 3; i < 300; ++i)
+
+      // pow PWM width changes
+      if (direction)
       {
-        sConfigOC.Pulse = i;
-        HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
-        HAL_Delay(5);
+        step = step + 0.1 ;
+        pulse = pow(step, 3);
+        if (pulse < 300)
+        {
+          sConfigOC.Pulse = pulse;
+          HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
+          HAL_Delay(20);
+        }
+        else
+        {
+          direction = 0;
+        }
       }
-      for (int i = 299; i > 3; i--)
+      else
       {
-        sConfigOC.Pulse = i;
-        HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
-        HAL_Delay(6);
+        step = step - 0.1;
+        pulse = pow(step, 3);
+        if (pulse > 1)
+        {
+          sConfigOC.Pulse = pulse;
+          HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
+          HAL_Delay(20);
+        }
+        else
+        {
+          direction = 1;
+        }
       }
+
+
+      // Linear PWM width changes
+      // for (int i = 3; i < 300; ++i)
+      // {
+      //   sConfigOC.Pulse = i;
+      //   HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
+      //   HAL_Delay(5);
+      // }
+      // for (int i = 299; i > 3; i--)
+      // {
+      //   sConfigOC.Pulse = i;
+      //   HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
+      //   HAL_Delay(6);
+      // }
     }
 }
 
@@ -129,7 +162,7 @@ void TIM1_Init(void)
   TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig;
 
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 3600;
+  htim1.Init.Prescaler = 360;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim1.Init.Period = 300;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
