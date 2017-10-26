@@ -44,14 +44,14 @@ int main(void)
     HAL_Init();
     SystemClock_Config();
 
-    __GPIOA_CLK_ENABLE();
-    __GPIOB_CLK_ENABLE();
-    __GPIOC_CLK_ENABLE();
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    __HAL_RCC_GPIOC_CLK_ENABLE();
 
     GPIO_InitStruct.Pin = LED_GPIO_PIN;
     GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull  = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(LED_GPIO_PORT, &GPIO_InitStruct);
 
     TIM1_Init();
@@ -231,7 +231,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
       HAL_GPIO_WritePin(LED_GPIO_PORT, LED_GPIO_PIN, GPIO_PIN_SET);
       htim1.Init.Period = 150;
       HAL_TIM_Base_Init(&htim1);
-      TIM_GET_CLEAR_IT(&htim1, TIM_IT_UPDATE);
+      __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_UPDATE);
       lala = 1;
     }
     else
@@ -239,7 +239,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
       HAL_GPIO_WritePin(LED_GPIO_PORT, LED_GPIO_PIN, GPIO_PIN_RESET);
       htim1.Init.Period = 1;
       HAL_TIM_Base_Init(&htim1);
-      TIM_GET_CLEAR_IT(&htim1, TIM_IT_UPDATE);
+      __HAL_TIM_CLEAR_IT(&htim1, TIM_IT_UPDATE);
       lala = 0;
     }
   }
@@ -248,7 +248,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  if (TIM_GET_ITSTATUS(&htim1, TIM_IT_CC3)) //Check timer and interrupt source
+  if (__HAL_TIM_GET_IT_SOURCE(&htim1, TIM_IT_CC3)) //Check timer and interrupt source
   {
     HAL_GPIO_WritePin(LED_GPIO_PORT, LED_GPIO_PIN, GPIO_PIN_SET);
   }
