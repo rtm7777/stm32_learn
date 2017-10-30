@@ -1,7 +1,7 @@
 PROJECT(stm32learn)
 cmake_minimum_required(VERSION 2.6)
 
-SET(STM32CubeF1_FW /home/nikolais/STM32Cube/Repository/STM32Cube_FW_F1_V1.6.0)
+SET(STM32CubeF1_FW /Users/admin/STM32Cube/Repository/STM32Cube_FW_F1_V1.6.0)
 
 INCLUDE_DIRECTORIES(
     ${STM32CubeF1_FW}/Drivers/CMSIS/Include/
@@ -15,15 +15,15 @@ SET(HAL_LIB_SRC ${STM32CubeF1_FW}/Drivers/STM32F1xx_HAL_Driver/Src/)
 SET(CMAKE_VERBOSE_MAKEFILE 0)
 SET(CMAKE_SYSTEM_NAME Linux)
 SET(CMAKE_BUILD_TYPE DEBUG)
-SET(CMAKE_C_COMPILER "/usr/bin/arm-none-eabi-gcc")
-SET(CMAKE_LINKER "/usr/bin/arm-none-eabi-ld")
-SET(CMAKE_OBJCOPY "/usr/bin/arm-none-eabi-objcopy")
-SET(CMAKE_SIZE "/usr/bin/arm-none-eabi-size")
+SET(CMAKE_C_COMPILER "/usr/local/bin/arm-none-eabi-gcc")
+SET(CMAKE_LINKER "/usr/local/bin/arm-none-eabi-ld")
+SET(CMAKE_OBJCOPY "/usr/local/bin/arm-none-eabi-objcopy")
+SET(CMAKE_SIZE "/usr/local/bin/arm-none-eabi-size")
 
-SET(LINK_SCRIPT ${CMAKE_SOURCE_DIR}/Boot/STM32F103XB_FLASH.ld)
+SET(LINK_SCRIPT ${CMAKE_SOURCE_DIR}/STM32F103XB_FLASH.ld)
 SET(FAMILY "STM32F103xB")
 
-SET(STARTUP Boot/startup_stm32f103xb.s Boot/system_stm32f1xx.c)
+SET(STARTUP startup_stm32f103xb.s Src/system_stm32f1xx.c)
 SET(STARTUP ${STARTUP}
     ${HAL_LIB_SRC}/stm32f1xx_hal.c
     ${HAL_LIB_SRC}/stm32f1xx_hal_cortex.c
@@ -34,8 +34,8 @@ SET(STARTUP ${STARTUP}
     ${HAL_LIB_SRC}/stm32f1xx_hal_dma.c
     ${HAL_LIB_SRC}/stm32f1xx_hal_uart.c
 )
-SET_PROPERTY(SOURCE Boot/startup_stm32f103xb.s PROPERTY LANGUAGE C)
-SET(SRC main.c stm32f1xx_it.c stm32f1xx_hal_msp.c)
+SET_PROPERTY(SOURCE startup_stm32f103xb.s PROPERTY LANGUAGE C)
+SET(SRC Src/main.c Src/stm32f1xx_it.c Src/stm32f1xx_hal_msp.c)
 
 SET(DEBUG_FLAGS "-O0 -g")
 
@@ -46,7 +46,7 @@ ADD_DEFINITIONS(-D${FAMILY} -DUSE_HAL_DRIVER)
 SET(CMAKE_EXE_LINKER_FLAGS "${DEBUG_FLAGS} -nostartfiles -T${LINK_SCRIPT}")
 SET(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
 
-CMAKE_POLICY(SET CMP0015 OLD)
+CMAKE_POLICY(SET CMP0015 NEW)
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM BOTH)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)

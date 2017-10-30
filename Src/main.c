@@ -1,8 +1,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "stm32f1xx_hal.h"
 #define ARM_MATH_CM3
 #include "arm_math.h"
-
 
 /** @addtogroup STM32F1xx_HAL_Examples
   * @{
