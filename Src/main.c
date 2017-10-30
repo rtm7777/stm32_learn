@@ -12,24 +12,51 @@
   * @{
   */
 
+#define LED_GPIO_PORT GPIOC
+#define LED_GPIO_PIN GPIO_PIN_13
+
+/* Private variables ---------------------------------------------------------*/
+TIM_HandleTypeDef htim1;
+TIM_HandleTypeDef htim2;
+TIM_OC_InitTypeDef sConfigOC;
+
+int lala = 0;
+
+/* USER CODE BEGIN PV */
+/* Private variables ---------------------------------------------------------*/
+
+/* USER CODE END PV */
+
+/* Private function prototypes -----------------------------------------------*/
+static void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+static void MX_TIM1_Init(void);
+static void MX_TIM2_Init(void);
+
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+
+
+/* USER CODE BEGIN PFP */
+/* Private function prototypes -----------------------------------------------*/
+
+/* USER CODE END PFP */
+
+/* USER CODE BEGIN 0 */
+
+/* USER CODE END 0 */
+
+
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 
-#define LED_GPIO_PORT GPIOC
-#define LED_GPIO_PIN GPIO_PIN_13
-
-TIM_HandleTypeDef htim1;
-TIM_HandleTypeDef htim2;
-TIM_OC_InitTypeDef sConfigOC;
-int lala = 0;
 
 /* Private variables ---------------------------------------------------------*/
-static GPIO_InitTypeDef  GPIO_InitStruct;
+
 
 /* Private function prototypes -----------------------------------------------*/
-static void SystemClock_Config(void);
-static void TIM1_Init(void);
+
 // static void TIM2_Init(void);
 
 /* Private functions ---------------------------------------------------------*/
@@ -41,78 +68,92 @@ static void TIM1_Init(void);
   */
 int main(void)
 {
-    HAL_Init();
-    SystemClock_Config();
 
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    __HAL_RCC_GPIOB_CLK_ENABLE();
-    __HAL_RCC_GPIOC_CLK_ENABLE();
 
-    GPIO_InitStruct.Pin = LED_GPIO_PIN;
-    GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull  = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(LED_GPIO_PORT, &GPIO_InitStruct);
+  /* USER CODE BEGIN 1 */
 
-    TIM1_Init();
-    // TIM2_Init();
-    HAL_TIM_Base_Start_IT(&htim1);
-    HAL_TIM_OC_Start_IT(&htim1, TIM_CHANNEL_3);
-    // HAL_TIM_Base_Start_IT(&htim2);
+  /* USER CODE END 1 */
 
-    int direction = 1;
-    float step = 1.0;
-    int pulse = 3;
+  /* MCU Configuration----------------------------------------------------------*/
 
-    while (1) {
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
 
-      // pow PWM width changes
-      if (direction)
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* Configure the system clock */
+  SystemClock_Config();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_TIM1_Init();
+  MX_TIM2_Init();
+
+
+  HAL_TIM_Base_Start_IT(&htim1);
+  HAL_TIM_OC_Start_IT(&htim1, TIM_CHANNEL_3);
+  HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_1);
+
+
+  int direction = 1;
+  float step = 1.0;
+  int pulse = 3;
+
+  while (1) {
+
+    // pow PWM width changes
+    if (direction)
+    {
+      step = step + 0.1 ;
+      pulse = pow(step, 3);
+      if (pulse < 300)
       {
-        step = step + 0.1 ;
-        pulse = pow(step, 3);
-        if (pulse < 300)
-        {
-          sConfigOC.Pulse = pulse;
-          HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
-          HAL_Delay(20);
-        }
-        else
-        {
-          direction = 0;
-        }
+        sConfigOC.Pulse = pulse;
+        HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
+        HAL_Delay(20);
       }
       else
       {
-        step = step - 0.1;
-        pulse = pow(step, 3);
-        if (pulse > 1)
-        {
-          sConfigOC.Pulse = pulse;
-          HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
-          HAL_Delay(20);
-        }
-        else
-        {
-          direction = 1;
-        }
+        direction = 0;
       }
-
-
-      // Linear PWM width changes
-      // for (int i = 3; i < 300; ++i)
-      // {
-      //   sConfigOC.Pulse = i;
-      //   HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
-      //   HAL_Delay(5);
-      // }
-      // for (int i = 299; i > 3; i--)
-      // {
-      //   sConfigOC.Pulse = i;
-      //   HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
-      //   HAL_Delay(6);
-      // }
     }
+    else
+    {
+      step = step - 0.1;
+      pulse = pow(step, 3);
+      if (pulse > 1)
+      {
+        sConfigOC.Pulse = pulse;
+        HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
+        HAL_Delay(20);
+      }
+      else
+      {
+        direction = 1;
+      }
+    }
+
+
+    // Linear PWM width changes
+    // for (int i = 3; i < 300; ++i)
+    // {
+    //   sConfigOC.Pulse = i;
+    //   HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
+    //   HAL_Delay(5);
+    // }
+    // for (int i = 299; i > 3; i--)
+    // {
+    //   sConfigOC.Pulse = i;
+    //   HAL_TIM_OC_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
+    //   HAL_Delay(6);
+    // }
+  }
 }
 
 /**
@@ -137,10 +178,10 @@ void SystemClock_Config(void)
   if (HAL_RCC_OscConfig(&oscinitstruct)!= HAL_OK)
   {
     /* Initialization Error */
-    while(1); 
+    while(1);
   }
 
-  /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 
+  /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2
      clocks dividers */
   clkinitstruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
   clkinitstruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
@@ -150,11 +191,11 @@ void SystemClock_Config(void)
   if (HAL_RCC_ClockConfig(&clkinitstruct, FLASH_LATENCY_2)!= HAL_OK)
   {
     /* Initialization Error */
-    while(1); 
+    while(1);
   }
 }
 
-void TIM1_Init(void)
+static void MX_TIM1_Init(void)
 {
 
   TIM_ClockConfigTypeDef sClockSourceConfig;
@@ -194,25 +235,53 @@ void TIM1_Init(void)
 
 }
 
-void TIM2_Init(void)
+/* TIM2 init function */
+static void MX_TIM2_Init(void)
 {
 
-  TIM_ClockConfigTypeDef sClockSourceConfig;
   TIM_MasterConfigTypeDef sMasterConfig;
+  TIM_OC_InitTypeDef sConfigOC;
 
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 3600;
+  htim2.Init.Prescaler = 360000;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 1000;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  HAL_TIM_Base_Init(&htim2);
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  HAL_TIM_PWM_Init(&htim2);
 
-  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig);
 
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig);
+
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 100;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1);
+
+  HAL_TIM_MspPostInit(&htim2);
+
+}
+
+static void MX_GPIO_Init(void)
+{
+
+  GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /*Configure GPIO pin : PC13 */
+  GPIO_InitStruct.Pin = LED_GPIO_PIN;
+  GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull  = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(LED_GPIO_PORT, &GPIO_InitStruct);
 
 }
 
