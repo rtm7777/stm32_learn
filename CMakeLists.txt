@@ -36,9 +36,9 @@ SET(STARTUP ${STARTUP}
     ${HAL_LIB_SRC}/stm32f1xx_hal_uart.c
 )
 SET_PROPERTY(SOURCE startup_stm32f103xb.s PROPERTY LANGUAGE C)
-SET(SRC Src/main.c Src/stm32f1xx_it.c Src/stm32f1xx_hal_msp.c)
+SET(SRC Src/main.c Src/lcd.c Src/stm32f1xx_it.c Src/stm32f1xx_hal_msp.c)
 
-SET(DEBUG_FLAGS "-O0 -g")
+SET(DEBUG_FLAGS "-Og -g")
 
 SET(MCU_FLAGS "-march=armv7-m -mcpu=cortex-m3 -mthumb")
 SET(CMAKE_C_FLAGS "${MCU_FLAGS} -fno-common -ffreestanding -fno-builtin -Wall --std=c99  ${DEBUG_FLAGS}")

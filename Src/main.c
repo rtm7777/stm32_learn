@@ -38,6 +38,10 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
   */
 int main(void)
 {
+
+
+  static char digits[] = "you can see some";
+  static char digits2[] = "fucking words!!!";
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
@@ -50,11 +54,21 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM2_Init();
 
-
   HAL_TIM_Base_Start_IT(&htim1);
   HAL_TIM_OC_Start_IT(&htim1, TIM_CHANNEL_3);
   /* Start TIM2 Channel1 PWM */
   HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_1);
+
+
+
+
+
+
+  LCD_ini();
+  LCD_String(digits);
+  LCD_SetPos(0, 1);
+  LCD_String(digits2);
+
 
 
   int direction = 1;
