@@ -4,14 +4,6 @@
 #define ARM_MATH_CM3
 #include "arm_math.h"
 
-/** @addtogroup STM32F1xx_HAL_Examples
-  * @{
-  */
-
-/** @addtogroup GPIO_IOToggle
-  * @{
-  */
-
 #define LED_GPIO_PORT GPIOC
 #define LED_GPIO_PIN GPIO_PIN_13
 
@@ -22,11 +14,6 @@ TIM_OC_InitTypeDef sConfigOC;
 
 int lala = 0;
 
-/* USER CODE BEGIN PV */
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE END PV */
-
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
@@ -35,29 +22,9 @@ static void MX_TIM2_Init(void);
 
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
-
-/* USER CODE BEGIN PFP */
-/* Private function prototypes -----------------------------------------------*/
-
-/* USER CODE END PFP */
-
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
-
-
-
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
-
-
-/* Private variables ---------------------------------------------------------*/
-
-
-/* Private function prototypes -----------------------------------------------*/
-
-// static void TIM2_Init(void);
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -68,27 +35,11 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
   */
 int main(void)
 {
-
-
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-
-  /* MCU Configuration----------------------------------------------------------*/
-
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
   /* Configure the system clock */
   SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
@@ -98,6 +49,7 @@ int main(void)
 
   HAL_TIM_Base_Start_IT(&htim1);
   HAL_TIM_OC_Start_IT(&htim1, TIM_CHANNEL_3);
+  /* Start TIM2 Channel1 PWM */
   HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_1);
 
 
@@ -168,7 +120,7 @@ void SystemClock_Config(void)
   // __PWR_CLK_ENABLE();
 
   /* Configure PLL ------------------------------------------------------*/
-  /*  8/1 * 6 = 48 MHz */
+  /*  8/1 * 9 = 72 MHz */
   oscinitstruct.OscillatorType  = RCC_OSCILLATORTYPE_HSE;
   oscinitstruct.HSEState        = RCC_HSE_ON;
   oscinitstruct.HSEPredivValue  = RCC_HSE_PREDIV_DIV1;
@@ -195,9 +147,9 @@ void SystemClock_Config(void)
   }
 }
 
+/* TIM1 init function */
 static void MX_TIM1_Init(void)
 {
-
   TIM_ClockConfigTypeDef sClockSourceConfig;
   TIM_MasterConfigTypeDef sMasterConfig;
   TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig;
@@ -265,6 +217,7 @@ static void MX_TIM2_Init(void)
 
 }
 
+/* GPIO init function */
 static void MX_GPIO_Init(void)
 {
 
