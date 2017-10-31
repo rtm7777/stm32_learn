@@ -31,6 +31,7 @@ SET(STARTUP ${STARTUP}
     ${HAL_LIB_SRC}/stm32f1xx_hal_gpio.c
     ${HAL_LIB_SRC}/stm32f1xx_hal_tim.c
     ${HAL_LIB_SRC}/stm32f1xx_hal_tim_ex.c
+    ${HAL_LIB_SRC}/stm32f1xx_hal_i2c.c
     ${HAL_LIB_SRC}/stm32f1xx_hal_dma.c
     ${HAL_LIB_SRC}/stm32f1xx_hal_uart.c
 )
