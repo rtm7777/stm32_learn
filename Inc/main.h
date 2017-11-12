@@ -43,6 +43,7 @@
 /* Includes ------------------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "lcd.h"
+#include "max7219.h"
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/

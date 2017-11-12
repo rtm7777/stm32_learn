@@ -27,16 +27,17 @@ SET(STARTUP startup_stm32f103xb.s Src/system_stm32f1xx.c)
 SET(STARTUP ${STARTUP}
     ${HAL_LIB_SRC}/stm32f1xx_hal.c
     ${HAL_LIB_SRC}/stm32f1xx_hal_cortex.c
-    ${HAL_LIB_SRC}/stm32f1xx_hal_rcc.c
+    ${HAL_LIB_SRC}/stm32f1xx_hal_dma.c
     ${HAL_LIB_SRC}/stm32f1xx_hal_gpio.c
+    ${HAL_LIB_SRC}/stm32f1xx_hal_i2c.c
+    ${HAL_LIB_SRC}/stm32f1xx_hal_rcc.c
+    ${HAL_LIB_SRC}/stm32f1xx_hal_spi.c
     ${HAL_LIB_SRC}/stm32f1xx_hal_tim.c
     ${HAL_LIB_SRC}/stm32f1xx_hal_tim_ex.c
-    ${HAL_LIB_SRC}/stm32f1xx_hal_i2c.c
-    ${HAL_LIB_SRC}/stm32f1xx_hal_dma.c
     ${HAL_LIB_SRC}/stm32f1xx_hal_uart.c
 )
 SET_PROPERTY(SOURCE startup_stm32f103xb.s PROPERTY LANGUAGE C)
-SET(SRC Src/main.c Src/lcd.c Src/stm32f1xx_it.c Src/stm32f1xx_hal_msp.c)
+SET(SRC Src/main.c Src/lcd.c Src/max7219.c Src/stm32f1xx_it.c Src/stm32f1xx_hal_msp.c)
 
 SET(DEBUG_FLAGS "-Og -g")
 
