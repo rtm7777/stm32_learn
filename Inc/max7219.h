@@ -2,8 +2,9 @@
 #define MAX7219_H_
 
 #include "stm32f1xx_hal.h"
-#include "main.h"
 
+int Symbol(int number);
+int SymbolWithDot (int number);
 void Send_7219 (uint8_t rg, uint8_t dt);
 void Clear_7219 (void);
 void Number_7219 (volatile long n);

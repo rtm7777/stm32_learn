@@ -67,15 +67,19 @@ int main(void)
 
   HAL_Delay(200);
   Init_7219();
-  Send_7219(1,0x06);//1
-  Send_7219(2,0x09);//2
-  Send_7219(3,0x00);//3
-  Send_7219(4,0x08);//4
-  Send_7219(5,0x05);//5
-  HAL_Delay(2000);
-  Clear_7219();
-  Number_7219(-4356);
-  HAL_Delay(2000);
+  Send_7219(1,SymbolWithDot(Symbol(3)));
+  Send_7219(2,SymbolWithDot(Symbol(1)));
+  Send_7219(3,SymbolWithDot(Symbol(9)));
+  Send_7219(4,SymbolWithDot(Symbol(10)));
+  Send_7219(5,SymbolWithDot(Symbol(0)));
+  // Send_7219(2,0x0E);
+  // Send_7219(3,0x0D);
+  // Send_7219(4,0x0B);
+  // Send_7219(5,0x0C);
+  // HAL_Delay(2000);
+  // Clear_7219();
+  // Number_7219(-4356);
+  // HAL_Delay(2000);
   // Clear_7219();
 
 
