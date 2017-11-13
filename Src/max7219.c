@@ -15,7 +15,29 @@ char symbols[]={
   0x70, // 7
   0x7f, // 8
   0x7b, // 9
-  0x01 // -
+  0x01, // -
+  0x00, // ""
+
+  0x77, // A
+  0x1F, // b
+  0x4E, // C
+  0x3D, // d
+  0x4F, // E
+  0x47, // F
+  0x5e, // G
+  0x37, // H
+  0x06, // I
+  0x3C, // J
+  0x0E, // L
+  0x15, // n
+  0x1D, // o
+  0x67, // P
+  0x73, // q
+  0x05, // r
+  0x5B, // S
+  0x0F, // t
+  0x3E, // U
+  0x3B, // Y
 };
 
 #define cs_set() HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
@@ -46,7 +68,8 @@ void Clear_7219(void)
   uint8_t i=dg;
   do
   {
-    Send_7219(i,0xF);
+    Send_7219(i,0x00); //for non decoding mode
+    // Send_7219(i,0xF); //for decoding mode
   } while (--i);
 }
 //------------------------------------------------------
@@ -68,6 +91,28 @@ void Number_7219(volatile long n)
   {
     Send_7219(i+1, 0x0A);
   }
+}
+
+void TickerBar_7219(char line[], int line_lenght, int speed)
+{
+  Clear_7219();
+  int full_length = line_lenght + dg;
+  for (int i = 1; i < full_length; i++)
+  {
+    for (int j = 0; j < dg+1; ++j)
+    {
+      if (j > i || i - j >= line_lenght)
+      {
+        Send_7219(j, 0x00);
+      }
+      else
+      {
+        Send_7219(j, line[i-j]);
+      }
+    }
+    HAL_Delay(speed);
+  }
+  Clear_7219();
 }
 //-------------------------------------------------------
 void Init_7219(void)

@@ -67,27 +67,48 @@ int main(void)
 
   HAL_Delay(200);
   Init_7219();
-  Send_7219(1,SymbolWithDot(Symbol(3)));
-  Send_7219(2,SymbolWithDot(Symbol(1)));
-  Send_7219(3,SymbolWithDot(Symbol(9)));
-  Send_7219(4,SymbolWithDot(Symbol(10)));
-  Send_7219(5,SymbolWithDot(Symbol(0)));
+  // Send_7219(1,SymbolWithDot(Symbol(3)));
+  // Send_7219(2,SymbolWithDot(Symbol(1)));
+  // Send_7219(3,SymbolWithDot(Symbol(9)));
+  // Send_7219(4,SymbolWithDot(Symbol(10)));
+  // Send_7219(5,SymbolWithDot(Symbol(0)));
   // Send_7219(2,0x0E);
-  // Send_7219(3,0x0D);
-  // Send_7219(4,0x0B);
-  // Send_7219(5,0x0C);
   // HAL_Delay(2000);
-  // Clear_7219();
   // Number_7219(-4356);
   // HAL_Delay(2000);
   // Clear_7219();
 
+  // int i = 0;
+  // while(i != 32)
+  // {
+  //   Send_7219(1,SymbolWithDot(Symbol(i)));
+  //   HAL_Delay(400);
+  //   i++;
+  // }
+
+  static char digits[] = {
+  0x5e, // G
+  0x7e, // 0
+  0x7e, // 0
+  0x3D, // d
+  0x00, // ""
+  0x00, // ""
+  0x00, // ""
+  0x15, // n
+  0x06, // I
+  0x5e, // G
+  0x37, // H
+  0x0F, // t
+  };
+  int line_lenght = sizeof(digits)/sizeof(digits[0]);
+  TickerBar_7219(digits, line_lenght, 200);
+  TickerBar_7219(digits, line_lenght, 200);
+  TickerBar_7219(digits, line_lenght, 200);
 
   // LCD_ini();
   // LCD_String(digits);
   // LCD_SetPos(0, 1);
   // LCD_String(digits2);
-
 
 
   int direction = 1;
