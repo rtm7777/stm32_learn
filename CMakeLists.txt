@@ -28,6 +28,8 @@ SET(STARTUP ${STARTUP}
     ${HAL_LIB_SRC}/stm32f1xx_hal.c
     ${HAL_LIB_SRC}/stm32f1xx_hal_cortex.c
     ${HAL_LIB_SRC}/stm32f1xx_hal_dma.c
+    ${HAL_LIB_SRC}/stm32f1xx_hal_flash.c
+    ${HAL_LIB_SRC}/stm32f1xx_hal_flash_ex.c
     ${HAL_LIB_SRC}/stm32f1xx_hal_gpio.c
     ${HAL_LIB_SRC}/stm32f1xx_hal_i2c.c
     ${HAL_LIB_SRC}/stm32f1xx_hal_rcc.c
@@ -37,7 +39,7 @@ SET(STARTUP ${STARTUP}
     ${HAL_LIB_SRC}/stm32f1xx_hal_uart.c
 )
 SET_PROPERTY(SOURCE startup_stm32f103xb.s PROPERTY LANGUAGE C)
-SET(SRC Src/main.c Src/lcd.c Src/max7219.c Src/stm32f1xx_it.c Src/stm32f1xx_hal_msp.c)
+SET(SRC Src/main.c Src/lcd.c Src/max7219.c Src/eeprom.c Src/stm32f1xx_it.c Src/stm32f1xx_hal_msp.c)
 
 SET(DEBUG_FLAGS "-Og -g")
 

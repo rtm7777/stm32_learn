@@ -7,6 +7,11 @@
 #define LED_GPIO_PORT GPIOC
 #define LED_GPIO_PIN GPIO_PIN_13
 
+/* Virtual address defined by the user: 0xFFFF value is prohibited */
+uint16_t VirtAddVarTab[NB_OF_VAR] = {0x5555, 0x6666, 0x7777};
+uint16_t VarDataTab[NB_OF_VAR] = {0, 0, 0};
+uint16_t VarValue = 0;
+
 /* Private variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
 

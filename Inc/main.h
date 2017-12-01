@@ -44,6 +44,7 @@
 /* USER CODE BEGIN Includes */
 #include "lcd.h"
 #include "max7219.h"
+#include "eeprom.h"
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
