@@ -1,4 +1,4 @@
-#include "lcd.h"
+#include "mcp4725.h"
 //------------------------------------------------
 uint8_t buf[1]={0};
 extern I2C_HandleTypeDef hi2c1;
@@ -102,3 +102,4 @@ void LCD_ini(void)
 	setled();
 	setwrite();
 }
+

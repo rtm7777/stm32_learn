@@ -73,7 +73,7 @@ void Clear_7219(void)
   } while (--i);
 }
 //------------------------------------------------------
-void Number_7219(volatile long n)
+void Number_7219_decoding(volatile long n)
 {
   uint8_t ng=0;
   if(n<0)
@@ -92,7 +92,27 @@ void Number_7219(volatile long n)
     Send_7219(i+1, 0x0A);
   }
 }
-
+//------------------------------------------------------
+void Number_7219_non_decoding(volatile long n)
+{
+  uint8_t ng=0;
+  if(n<0)
+  {
+    ng=1;
+    n*=-1;
+  }
+  uint8_t i=0;
+  do
+  {
+    Send_7219(++i, symbols[n%10]);
+    n/=10;
+  } while(n);
+  if(ng)
+  {
+    Send_7219(i+1, symbols[10]);
+  }
+}
+//------------------------------------------------------
 void TickerBar_7219(char line[], int line_lenght, int speed)
 {
   Clear_7219();

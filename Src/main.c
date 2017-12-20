@@ -19,6 +19,7 @@ SPI_HandleTypeDef hspi1;
 
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
+TIM_HandleTypeDef htim4;
 TIM_OC_InitTypeDef sConfigOC;
 
 int lala = 0;
@@ -29,6 +30,7 @@ static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM2_Init(void);
+static void MX_TIM4_Init(void);
 static void MX_SPI1_Init(void);
 
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
@@ -62,9 +64,11 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM1_Init();
   MX_TIM2_Init();
+  MX_TIM4_Init();
 
   HAL_TIM_Base_Start_IT(&htim1);
   HAL_TIM_OC_Start_IT(&htim1, TIM_CHANNEL_3);
+  HAL_TIM_Encoder_Start_IT(&htim4,TIM_CHANNEL_1);
   /* Start TIM2 Channel1 PWM */
   HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_1);
 
@@ -79,7 +83,7 @@ int main(void)
   // Send_7219(5,SymbolWithDot(Symbol(0)));
   // Send_7219(2,0x0E);
   // HAL_Delay(2000);
-  // Number_7219(-4356);
+  // Number_7219_decoding(-4356);
   // HAL_Delay(2000);
   // Clear_7219();
 
@@ -91,24 +95,22 @@ int main(void)
   //   i++;
   // }
 
-  static char digits[] = {
-  0x5e, // G
-  0x7e, // 0
-  0x7e, // 0
-  0x3D, // d
-  0x00, // ""
-  0x00, // ""
-  0x00, // ""
-  0x15, // n
-  0x06, // I
-  0x5e, // G
-  0x37, // H
-  0x0F, // t
-  };
-  int line_lenght = sizeof(digits)/sizeof(digits[0]);
-  TickerBar_7219(digits, line_lenght, 200);
-  TickerBar_7219(digits, line_lenght, 200);
-  TickerBar_7219(digits, line_lenght, 200);
+  // static char digits[] = {
+  // 0x5e, // G
+  // 0x7e, // 0
+  // 0x7e, // 0
+  // 0x3D, // d
+  // 0x00, // ""
+  // 0x00, // ""
+  // 0x00, // ""
+  // 0x15, // n
+  // 0x06, // I
+  // 0x5e, // G
+  // 0x37, // H
+  // 0x0F, // t
+  // };
+  // int line_lenght = sizeof(digits)/sizeof(digits[0]);
+  // TickerBar_7219(digits, line_lenght, 200);
 
   // LCD_ini();
   // LCD_String(digits);
@@ -119,6 +121,22 @@ int main(void)
   int direction = 1;
   float step = 1.0;
   int pulse = 3;
+  int counter = 0;
+
+  while (1) {
+    HAL_Delay(50);
+    counter = __HAL_TIM_GET_COUNTER(&htim4);
+    if (counter < 65000)
+    {
+      Clear_7219();
+      Number_7219_non_decoding(counter);
+    }
+    else
+    {
+      Clear_7219();
+      Number_7219_non_decoding(-1);
+    }
+  }
 
   while (1) {
 
@@ -277,6 +295,37 @@ static void MX_TIM2_Init(void)
   HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1);
 
   HAL_TIM_MspPostInit(&htim2);
+
+}
+
+/* TIM4 init function */
+static void MX_TIM4_Init(void)
+{
+
+  TIM_Encoder_InitTypeDef sConfig;
+  TIM_MasterConfigTypeDef sMasterConfig;
+
+  htim4.Instance = TIM4;
+  htim4.Init.Prescaler = 0;
+  htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim4.Init.Period = 65000;
+  htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  sConfig.EncoderMode = TIM_ENCODERMODE_TI12;
+  sConfig.IC1Polarity = TIM_ICPOLARITY_RISING;
+  sConfig.IC1Selection = TIM_ICSELECTION_DIRECTTI;
+  sConfig.IC1Prescaler = TIM_ICPSC_DIV1;
+  sConfig.IC1Filter = 0;
+  sConfig.IC2Polarity = TIM_ICPOLARITY_FALLING;;
+  sConfig.IC2Selection = TIM_ICSELECTION_DIRECTTI;
+  sConfig.IC2Prescaler = TIM_ICPSC_DIV1;
+  sConfig.IC2Filter = 0;
+  HAL_TIM_Encoder_Init(&htim4, &sConfig);
+
+
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  HAL_TIMEx_MasterConfigSynchronization(&htim4, &sMasterConfig);
 
 }
 
