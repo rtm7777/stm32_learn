@@ -14,6 +14,7 @@ uint16_t VarValue = 0;
 
 /* Private variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
+I2C_HandleTypeDef hi2c2;
 
 SPI_HandleTypeDef hspi1;
 
@@ -28,6 +29,7 @@ int lala = 0;
 static void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
+static void MX_I2C2_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM4_Init(void);
@@ -50,7 +52,7 @@ int main(void)
 {
 
 
-  // static char digits[] = "Yura";
+  // static char digitslcd[] = "Yura";
   // static char digits2[] = "polismen";
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
@@ -61,6 +63,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   // MX_I2C1_Init();
+  MX_I2C2_Init();
   MX_SPI1_Init();
   MX_TIM1_Init();
   MX_TIM2_Init();
@@ -113,7 +116,8 @@ int main(void)
   // TickerBar_7219(digits, line_lenght, 200);
 
   // LCD_ini();
-  // LCD_String(digits);
+  // LCD_SendChar('f');
+  // LCD_String(digitslcd);
   // LCD_SetPos(0, 1);
   // LCD_String(digits2);
 
@@ -125,16 +129,13 @@ int main(void)
 
   while (1) {
     HAL_Delay(50);
-    counter = __HAL_TIM_GET_COUNTER(&htim4);
-    if (counter < 65000)
+    int c = __HAL_TIM_GET_COUNTER(&htim4);
+    if (c != counter)
     {
+      counter = c;
       Clear_7219();
       Number_7219_non_decoding(counter);
-    }
-    else
-    {
-      Clear_7219();
-      Number_7219_non_decoding(-1);
+      mcp4725SetVoltage(counter, 0);
     }
   }
 
@@ -308,7 +309,7 @@ static void MX_TIM4_Init(void)
   htim4.Instance = TIM4;
   htim4.Init.Prescaler = 0;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = 65000;
+  htim4.Init.Period = 4095;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   sConfig.EncoderMode = TIM_ENCODERMODE_TI12;
@@ -396,6 +397,24 @@ static void MX_I2C1_Init(void)
   hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
 
   HAL_I2C_Init(&hi2c1);
+
+}
+
+/* I2C2 init function */
+static void MX_I2C2_Init(void)
+{
+
+  hi2c2.Instance = I2C2;
+  hi2c2.Init.ClockSpeed = 100000;
+  hi2c2.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c2.Init.OwnAddress1 = 0;
+  hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c2.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c2.Init.OwnAddress2 = 0;
+  hi2c2.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c2.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+
+  HAL_I2C_Init(&hi2c2);
 
 }
 

@@ -1,105 +1,55 @@
 #include "mcp4725.h"
 //------------------------------------------------
-uint8_t buf[1]={0};
-extern I2C_HandleTypeDef hi2c1;
-char str1[100];
-uint8_t portlcd;
-//------------------------------------------------
-__STATIC_INLINE void DelayMicro(__IO uint32_t micros)
-{
-	micros *=(SystemCoreClock / 1000000) / 5;
-	while (micros--);
-}
-//------------------------------------------------
-void LCD_WriteByteI2CLCD(uint8_t bt)
-{
-	buf[0]=bt;
-	HAL_I2C_Master_Transmit(&hi2c1,(uint16_t) 0x4E,buf,1,1000);
-}
-//------------------------------------------------
-void sendhalfbyte(uint8_t c)
-{
-	c<<=4;
-	e_set();
-	DelayMicro(50);
-	LCD_WriteByteI2CLCD(portlcd|c);
-	e_reset();
-	DelayMicro(50);
-}
-//------------------------------------------------
-void sendbyte(uint8_t c, uint8_t mode)
-{
-	if(mode==0) rs_reset();
-	else rs_set();
-	uint8_t hc=0;
-	hc=c>>4;
-	sendhalfbyte(hc);sendhalfbyte(c);
-}
-//------------------------------------------------
-void LCD_Clear(void)
-{
-	sendbyte(0x01,0);
-	HAL_Delay(2);
-}
-//------------------------------------------------
-void LCD_SendChar(char ch)
-{
-	sendbyte(ch,1);
-}
-//------------------------------------------------
-void LCD_String(char* st)
-{
-	uint8_t i=0;
-	while(st[i]!=0)
-	{
-		sendbyte(st[i],1);
-		i++;
-	}
-}
-//------------------------------------------------
-void LCD_SetPos(uint8_t x, uint8_t y)
-{
-	switch(y)
-	{
-		case 0:
-			sendbyte(x|0x80,0);
-			HAL_Delay(1);
-			break;
-		case 1:
-			sendbyte((0x40+x)|0x80,0);
-			HAL_Delay(1);
-			break;
-		case 2:
-			sendbyte((0x14+x)|0x80,0);
-			HAL_Delay(1);
-			break;
-		case 3:
-			sendbyte((0x54+x)|0x80,0);
-			HAL_Delay(1);
-			break;
-	}
-}
-//------------------------------------------------
-void LCD_ini(void)
-{
-	HAL_Delay(15);
-	sendhalfbyte(0x03);
-	HAL_Delay(4);
-	sendhalfbyte(0x03);
-	DelayMicro(100);
-	sendhalfbyte(0x03);
-	HAL_Delay(1);
-	sendhalfbyte(0x02);
-	HAL_Delay(1);
-	sendbyte(0x28,0);
-	HAL_Delay(1);
-	sendbyte(0x0C,0);
-	HAL_Delay(1);
-	sendbyte(0x01,0);
-	HAL_Delay(2);
-	sendbyte(0x06,0);
-	HAL_Delay(1);
-	setled();
-	setwrite();
-}
+extern I2C_HandleTypeDef hi2c2;
 
+uint8_t mcp4725_address = 0xC0; //0xC4 - other address
+uint8_t mcp4725_read = 0x01;
+uint8_t mcp4725_dac = 0x40;  // Writes data to the DAC
+uint8_t mcp4725_dac_eeprom = 0x60;  // Writes data to the DAC and the EEPROM (persisting the assigned value after reset)
+
+uint8_t buffer[3]={0x00};
+
+//------------------------------------------------
+void mcp4725SetVoltage( uint16_t output, char writeEEPROM )
+{
+
+  // Clear write bufferfer
+  uint32_t i;
+  for ( i = 0; i < 3; i++ )
+  {
+    buffer[i] = 0x00;
+  }
+
+  if (writeEEPROM == 1)  // command and config bits  (C2.C1.C0.x.x.PD1.PD0.x)
+  {
+    buffer[0] = mcp4725_dac_eeprom;
+  }
+  else
+  {
+    buffer[0] = mcp4725_dac;
+  }
+  buffer[1] = (output / 16);       // Upper data bits     (D11.D10.D9.D8.D7.D6.D5.D4)
+  buffer[2] = (output % 16) << 4;  // Lower data bits     (D3.D2.D1.D0.x.x.x.x)
+  HAL_I2C_Master_Transmit(&hi2c2, mcp4725_address, buffer, 3, 1000);
+}
+//------------------------------------------------
+void mcp4725ReadConfig( uint8_t *status, uint16_t *value )
+{
+  // if (!_mcp4725Initialised) mcp4725Init();
+
+  // // Clear write buffers
+  // uint32_t i;
+  // for ( i = 0; i < I2C_BUFSIZE; i++ )
+  // {
+  //   I2CMasterBuffer[i] = 0x00;
+  // }
+
+  // I2CWriteLength = 1;
+  // I2CReadLength = 3;
+  // I2CMasterBuffer[0] = MCP4725_ADDRESS | MCP4725_READ;
+  // i2cEngine();
+
+  // Shift values to create properly formed integers
+  // *status = I2CSlaveBuffer[0];
+  // *value = ((I2CSlaveBuffer[1] << 4) | (I2CSlaveBuffer[2] >> 4));
+}

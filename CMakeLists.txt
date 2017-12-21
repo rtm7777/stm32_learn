@@ -39,7 +39,7 @@ SET(STARTUP ${STARTUP}
     ${HAL_LIB_SRC}/stm32f1xx_hal_uart.c
 )
 SET_PROPERTY(SOURCE startup_stm32f103xb.s PROPERTY LANGUAGE C)
-SET(SRC Src/main.c Src/lcd.c Src/max7219.c Src/eeprom.c Src/stm32f1xx_it.c Src/stm32f1xx_hal_msp.c)
+SET(SRC Src/main.c Src/lcd.c Src/max7219.c Src/mcp4725.c Src/eeprom.c Src/stm32f1xx_it.c Src/stm32f1xx_hal_msp.c)
 
 SET(DEBUG_FLAGS "-Og -g")
 

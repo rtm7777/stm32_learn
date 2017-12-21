@@ -3,12 +3,12 @@
 //------------------------------------------------
 #include "stm32f1xx_hal.h"
 //------------------------------------------------
-#define e_set() LCD_WriteByteI2CLCD(portlcd|=0x04)  //óñòàíîâêà ëèíèè Å â 1
-#define e_reset() LCD_WriteByteI2CLCD(portlcd&=~0x04) //óñòàíîâêà ëèíèè Å â 0
-#define rs_set() LCD_WriteByteI2CLCD(portlcd|=0x01) //óñòàíîâêà ëèíèè RS â 1
-#define rs_reset() LCD_WriteByteI2CLCD(portlcd&=~0x01) //óñòàíîâêà ëèíèè RS â 0
-#define setled() LCD_WriteByteI2CLCD(portlcd|=0x08) //óñòàíîâêà ëèíèè RS â 1
-#define setwrite() LCD_WriteByteI2CLCD(portlcd&=~0x02) //óñòàíîâêà ëèíèè RS â 0
+#define e_set() LCD_WriteByteI2CLCD(portlcd|=0x04)
+#define e_reset() LCD_WriteByteI2CLCD(portlcd&=~0x04)
+#define rs_set() LCD_WriteByteI2CLCD(portlcd|=0x01)
+#define rs_reset() LCD_WriteByteI2CLCD(portlcd&=~0x01)
+#define setled() LCD_WriteByteI2CLCD(portlcd|=0x08)
+#define setwrite() LCD_WriteByteI2CLCD(portlcd&=~0x02)
 //------------------------------------------------
 void LCD_ini(void);
 void LCD_Clear(void);
