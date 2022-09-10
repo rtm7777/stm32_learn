@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        {
+        "name": "STM32",
+        "includePath": [
+            "Core/Inc",
+            "Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+            "Drivers/CMSIS/Include",
+            "Drivers/STM32F1xx_HAL_Driver/Inc",
+            "Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+            "xpacks/xpack-dev-tools-arm-none-eabi-gcc/.content/arm-none-eabi/include",
+            "xpacks/xpack-dev-tools-arm-none-eabi-gcc/.content/arm-none-eabi/include/machine",
+            "xpacks/xpack-dev-tools-arm-none-eabi-gcc/.content/arm-none-eabi/include/sys",
+            "xpacks/xpack-dev-tools-arm-none-eabi-gcc/.content/lib/gcc/arm-none-eabi/11.3.1/include",
+            "xpacks/xpack-dev-tools-arm-none-eabi-gcc/.content/lib/gcc/arm-none-eabi/11.3.1/include-fixed"
+        ],
+        "defines": [
+            "DEBUG",
+            "STM32F103xB",
+            "USE_HAL_DRIVER"
+        ],
+        "intelliSenseMode": "linux-gcc-arm",
+        "cStandard": "c11",
+        "compilerPath": "${workspaceRoot}/xpacks/.bin/arm-none-eabi-gcc",
+        "configurationProvider": "ms-vscode.makefile-tools"
+        }
+    ],
+    "version": 4
+}

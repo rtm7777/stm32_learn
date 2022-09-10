@@ -32,7 +32,9 @@
 # Debug files
 *.dSYM/
 
-/CMakeFiles
-CMakeCache.txt
-cmake_install.cmake
-Makefile
+*.state.json
+build
+Drivers
+xpacks
+STM32F103.svd
+.mxproject

@@ -1,0 +1,73 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug openocd",
+      "showDevDebugOutput": "parsed",
+      "cwd": "${workspaceRoot}",
+      "executable": "./build/stm32_learn.elf",
+      "request": "launch",
+      "type": "cortex-debug",
+      "servertype": "openocd",
+      "preLaunchTask": "Build all",
+      "device": "STM32F103XB",
+      "configFiles": [
+        "openocd.cfg"
+      ],
+      "svdFile": "./STM32F103.svd",
+      "swoConfig": {
+        "enabled": true,
+        "cpuFrequency": 64000000,
+        "swoFrequency": 2000000,
+        "source": "probe",
+        "runTomain": true,
+        "decoders": [
+          {
+            "label": "ITM output",
+            "type": "console",
+            "port": 0,
+            "showOnStartup": true,
+            "encoding": "ascii"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Attach openocd",
+      "showDevDebugOutput": "parsed",
+      "cwd": "${workspaceRoot}",
+      "executable": "./build/stm32_learn.elf",
+      "request": "attach",
+      "type": "cortex-debug",
+      "servertype": "openocd",
+      "preLaunchTask": "Build all",
+      "device": "STM32F103XB",
+      "configFiles": [
+        "openocd.cfg"
+      ]
+    },
+    {
+      "name": "Debug stutil",
+      "cwd": "${workspaceRoot}",
+      "executable": "./build/stm32_learn.elf",
+      "request": "launch",
+      "type": "cortex-debug",
+      "showDevDebugOutput": "parsed",
+      "servertype": "stutil",
+      "device": "STM32F103XB",
+      "preLaunchTask": "Build all",
+      "svdFile": "./STM32F103.svd"
+    },
+    {
+      "name": "Attach stutil",
+      "cwd": "${workspaceRoot}",
+      "executable": "./build/stm32_learn.elf",
+      "request": "attach",
+      "type": "cortex-debug",
+      "showDevDebugOutput": "parsed",
+      "servertype": "stutil",
+      "device": "STM32F103XB",
+      "preLaunchTask": "Build all",
+    }
+  ]
+}
