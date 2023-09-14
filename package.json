@@ -28,8 +28,8 @@
     "minimumXpmRequired": "0.14.0",
     "dependencies": {},
     "devDependencies": {
-      "@xpack-dev-tools/arm-none-eabi-gcc": "11.3.1-1.1.2",
-      "@xpack-dev-tools/openocd": "0.11.0-5.1"
+      "@xpack-dev-tools/arm-none-eabi-gcc": "12.3.1-1.1.1",
+      "@xpack-dev-tools/openocd": "0.12.0-1.1"
     },
     "properties": {},
     "actions": {},
